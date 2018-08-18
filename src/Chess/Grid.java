@@ -7,14 +7,16 @@ import java.util.Map;
 public class Grid {
 
     String name;
+    private static int min = 1;
+    private static int max = 8;
     Map<Integer, Map<Integer, Piece>> board = new HashMap<>();
     Map<String, ?> allObjects = new HashMap<>();
     Map<String, Integer> boundary = new HashMap<>();
 
     public Grid(String name) {
         this.name = name;
-        this.boundary.put("min", 1);
-        this.boundary.put("max", 8);
+        this.boundary.put("min", min);
+        this.boundary.put("max", max);
         this.boundary = Collections.unmodifiableMap(this.boundary);
     }
 
@@ -49,6 +51,7 @@ public class Grid {
     }
 
     public Piece getPiece(boolean color, Piece piece) {
+
         return piece;
     }
 
@@ -59,6 +62,43 @@ public class Grid {
         spotTwo.put(y, piece);
         this.board.put(oldX, spotOne);
         this.board.put(x, spotTwo);
+    }
+
+    public boolean boundaryCheck(int x, int y) {
+        int min = this.boundary.get("min");
+        int max = this.boundary.get("max");
+
+        if (min > x || max < x || min > y || max < y) {
+            return false;
+        }
+        return true;
+    }
+
+    public static Grid initializeGrid(String name) {
+        Grid grid = new Grid(name);
+
+        for (int numX = min; numX <= max; numX++) {
+            Map map = new HashMap<Integer, Piece>();
+
+            for (int numY = min; numY <= max; numY++) {
+                map.put(numY, null);
+            }
+
+            grid.board.put(numX, map);
+        }
+        return grid;
+    }
+
+    public static Grid initializeGame(String name) {
+        Grid grid = new Grid(name);
+
+        boolean homeTeam;
+        int initFrontYPosition;
+        int initRearYPosition;
+        String color;
+        Map allObjects = new HashMap<String, Piece[]>();
+
+        return grid;
     }
 //
 //    public void setAllObjects = function(obj) {

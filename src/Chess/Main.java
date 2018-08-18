@@ -3,6 +3,7 @@ package Chess;
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
+        Grid grid = Grid.initializeGrid("Matthew");
+        System.out.println(grid.board);
     }
 }
