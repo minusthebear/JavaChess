@@ -21,13 +21,12 @@ public abstract class Piece {
         this.position.put("y", y);
     }
 
-    public boolean checkIfOppositeColor(int x, int y /*, Grid grid */) {
-
-        return true;
-    }
+    public abstract boolean checkIfOppositeColor(int x, int y, Grid grid);
 
     public void setPosition(int x, int y) {
         this.position.put("x", x);
         this.position.put("y", y);
     }
+
+    public abstract boolean setGrid(Grid grid, int x, int oldX, int y, int oldY);
 }
