@@ -1,5 +1,6 @@
 package Chess;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,7 @@ public class Grid {
     private static int min = 1;
     private static int max = 8;
     Map<Integer, Map<Integer, Piece>> board = new HashMap<>();
-    Map<String, ?> allObjects = new HashMap<>();
+    Map<String, Map<String, Piece[]>> allObjects = new HashMap<>();
     Map<String, Integer> boundary = new HashMap<>();
 
     public Grid(String name) {
@@ -40,7 +41,7 @@ public class Grid {
         return allObjects;
     }
 
-    public void setAllObjects(Map<String, ?> allObjects) {
+    public void setAllObjects(Map<String, Map<String, Piece[]>> allObjects) {
         this.allObjects = allObjects;
     }
 
@@ -89,65 +90,46 @@ public class Grid {
         return grid;
     }
 
-    public static Grid initializeGame(String name) {
+    public Grid initializeGame(String name) {
         Grid grid = new Grid(name);
 
         boolean homeTeam;
         int initFrontYPosition;
         int initRearYPosition;
         String color;
-        Map allObjects = new HashMap<String, Piece[]>();
+        Map allObjects = new HashMap<String, Map<String, Piece[]>>();
+
+        for (int i = 0; i < 2; i++) {
+            if (i % 2 == 0) {
+                initFrontYPosition = 7;
+                initRearYPosition = 8;
+                color = "white";
+                homeTeam = true;
+            } else {
+                initFrontYPosition = 2;
+                initRearYPosition = 1;
+                color = "black";
+                homeTeam = false;
+            }
+
+            Rook[] rookArray = initializeRooks(grid, homeTeam, initRearYPosition);
+            Map pieces = new HashMap<String, Rook[]>();
+            pieces.put("rooks", rookArray);
+            this.allObjects.put(color, pieces);
+        }
 
         return grid;
     }
-//
-//    public void setAllObjects = function(obj) {
-//        this.allObjects = obj;
-//    }
-//
-//    Grid.prototype.setTwoStartPosOnGrid = function(one, two) {
-//        this.setStartPosOnGrid.apply(this, one);
-//        this.setStartPosOnGrid.apply(this, two);
-//    }
-//
-//    Grid.prototype.setStartPosOnGrid = function(x, y, obj) {
-//        this.grid[x][y] = obj;
-//    }
-//
-//    Grid.prototype.getSpecificPiece = function(color, piece, id) {
-//        if (!color || !piece) {
-//            return false;
-//        }
-//
-//        var arr = this.allObjects[color][piece];
-//
-//        for (var i = 0; i < arr.length; i++) {
-//            if (id === arr[i].id) {
-//                return arr[i];
-//            }
-//        }
-//    }
-//
-//    Grid.prototype.setPiece = function(x, y, oldX, oldY, obj) {
-//        this.grid[oldX][oldY] = null;
-//        this.grid[x][y] = obj;
-//    }
-//
-//    Grid.prototype.splicePiece = function(obj) {
-//        // TODO: see if this works
-//        var piece = this.getPieceType.call(this, obj);
-//
-//        if (piece) {
-//            var color = obj.white ? 'white' : 'black',
-//                    id = obj.id,
-//                    arr = this.allObjects[color][piece];
-//
-//            for (var i = 0; i < arr.length; i++) {
-//                if (arr[i].id === id) {
-//                    arr.splice(i, i + 1);
-//                }
-//            }
-//        }
-//    }
 
+
+    private Rook[] initializeRooks(Grid grid, boolean team, int Y) {
+        Rook rookOne = new Rook(1, Y, "Rook", team);
+        Rook rookTwo = new Rook(8, Y, "Rook", team);
+        Rook[] rooks = new Rook[]{rookOne, rookTwo};
+
+        grid.setStartPosOnGrid(1, Y, rookOne);
+        grid.setStartPosOnGrid(8, Y, rookTwo);
+
+        return rooks;
+    }
 }
