@@ -3,13 +3,14 @@ package Chess;
 import java.util.Map;
 
 public class Rook extends Piece {
+
+    PieceMoves pieceMoves;
     boolean untouched;
 
     public Rook (int x, int y, String type, boolean color) {
         super(x, y, type, color);
         this.untouched = true;
     }
-
 
     public boolean moveStraight(int x, int y, Grid grid) {
 
@@ -84,6 +85,7 @@ public class Rook extends Piece {
             this.untouched = false;
             return true;
         }
+        return false;
     }
 
     private int loopThru(int x, int y, int oldX, int oldY, Grid grid) {
@@ -94,27 +96,39 @@ public class Rook extends Piece {
 
             Piece oldObj;
 
-            if (this.checkIfOppositeColor(board, x, i)) {
-                oldObj = board[x][i];
-                this.setGrid(grid, x, oldX, i, oldY);
-                this.unTouched = false;
-                grid.splicePiece(oldObj);
+            if (this.checkIfOppositeColor(x, y, grid)) {
+                oldObj = piece;
+                this.setGrid(grid, x, oldX, y, oldY);
+                this.untouched = false;
+
+                /* TODO */
+
+                // grid.splicePiece(oldObj);
                 return 1;
             } else {
                 return -1;
             }
         }
+        return 0;
     }
 
-    Rook.prototype.setGrid = function(grid, x, oldX, y, oldY) {
-
-        if (!x || !y || !oldX || !oldY) {
-            return false;
-        }
-
-        this.setPosition(x, y);
-        grid.setPiece(x, y, oldX, oldY, this);
-        return true;
+    public boolean setGrid(Grid grid, int x, int oldX, int y, int oldY) {
+        return false;
     }
+
+    public boolean move(int x, int y, Grid grid) {
+        return pieceMoves.moveStraight(this, x, y, grid);
+    }
+//
+//    Rook.prototype.setGrid = function(grid, x, oldX, y, oldY) {
+//
+//        if (!x || !y || !oldX || !oldY) {
+//            return false;
+//        }
+//
+//        this.setPosition(x, y);
+//        grid.setPiece(x, y, oldX, oldY, this);
+//        return true;
+//    }
 
 }

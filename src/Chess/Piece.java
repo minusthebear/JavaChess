@@ -21,7 +21,19 @@ public abstract class Piece {
         this.position.put("y", y);
     }
 
-    public abstract boolean checkIfOppositeColor(int x, int y, Grid grid);
+    public boolean checkIfOppositeColor(int x, int y, Grid grid) {
+        Map <Integer, Piece> row = grid.board.get(x);
+        Piece piece = row.get(y);
+
+        if (piece != null) {
+            return false;
+        }
+
+        if (piece.white == this.white) {
+            return false;
+        }
+        return true;
+    }
 
     public void setPosition(int x, int y) {
         this.position.put("x", x);
