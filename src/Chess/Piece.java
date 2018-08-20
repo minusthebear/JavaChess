@@ -40,5 +40,7 @@ public abstract class Piece {
         this.position.put("y", y);
     }
 
+    public abstract boolean move(int x, int y, Grid grid);
+
     public abstract boolean setGrid(Grid grid, int x, int oldX, int y, int oldY);
 }
