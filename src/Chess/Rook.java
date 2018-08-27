@@ -5,7 +5,7 @@ import java.util.Map;
 public class Rook extends Piece {
 
     PieceMoves pieceMoves;
-    boolean untouched;
+    private boolean untouched;
 
     public Rook (int x, int y, String type, boolean color) {
         super(x, y, type, color);

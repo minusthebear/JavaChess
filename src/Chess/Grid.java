@@ -8,8 +8,8 @@ import java.util.Map;
 public class Grid {
 
     String name;
-    private static int min = 1;
-    private static int max = 8;
+    private static final int min = 1;
+    private static final int max = 8;
     Map<Integer, Map<Integer, Piece>> board = new HashMap<>();
     Map<String, Map<String, Piece[]>> allObjects = new HashMap<>();
     Map<String, Integer> boundary = new HashMap<>();
@@ -131,5 +131,28 @@ public class Grid {
         grid.setStartPosOnGrid(8, Y, rookTwo);
 
         return rooks;
+    }
+
+
+
+    public void splicePiece(Piece piece) {
+
+        if (piece != null) {
+            String color;
+            int id = piece.getId();
+
+            if (piece.isWhite()) {
+                color = "white";
+            } else {
+                color = "black";
+            }
+                    arr = this.allObjects[color][piece];
+
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i].id === id) {
+                    arr.splice(i, i + 1);
+                }
+            }
+        }
     }
 }
