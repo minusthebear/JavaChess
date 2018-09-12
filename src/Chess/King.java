@@ -19,7 +19,6 @@ public class King extends Piece {
         return false;
     }
 
-
     public boolean moveStraight(int x, int y, Grid grid) {
 
         if (!grid.boundaryCheck(x, y)) {
@@ -29,7 +28,7 @@ public class King extends Piece {
         int oldX = this.position.get("x")
         int oldY = this.position.get("y");
 
-        if (this.checkIfInCheck(x, y, grid)) {
+        if (checkIfInCheck(x, y, grid)) {
             return false;
         }
 
@@ -49,11 +48,18 @@ public class King extends Piece {
             }
             return false;
         }
-        this.setGridStraight(grid, x, oldX, y, oldY);
+        this.setGridStraight(grid, x, y);
         this.untouched = false;
         return true;
     };
 
+    private void setGridStraight(Grid grid, int x, int y) {
+        int oldX = this.position.get("x");
+        int oldY = this.position.get("y");
+
+        this.setPosition(x, y);
+        // grid.setPiece(x, y, oldX, oldY);
+    };
 
     private boolean moveStraightCheck(int x, int y) {
 
@@ -81,18 +87,18 @@ public class King extends Piece {
             return false;
         }
 
-        if (this.checkIfInCheck(x, y, grid)) {
+        if (checkIfInCheck(x, y, grid)) {
             return false;
         }
 
         if (moveDiagonalCheck(x, y)) {
-            return king.checkPiece.apply(king, [grid, x, oldX, y, oldY]);
+            return checkPiece(grid, x, y);
         }
         return false;
     };
 
 
-    private boolean moveDiagonalCheck(int x, int yk) {
+    private boolean moveDiagonalCheck(int x, int y) {
 
         int oldX = this.position.get("x");
         int oldY = this.position.get("y");
@@ -109,5 +115,31 @@ public class King extends Piece {
 
         return true;
     }
+
+    private void setGridDiagonal(int x, int y, Grid grid) {
+
+        int oldNumX = this.position.get("x");
+        int oldNumY = this.position.get("y");
+
+        if (oldNumX != x && oldNumY != y) {
+            setPosition(x, y);
+            grid.setPiece(x, y, oldNumX, oldNumY, this );
+        }
+    }
+
+
+    private boolean checkPiece(Grid grid, int numX, int numY) {
+        Map<Integer, Piece> row = grid.board.get(numX);
+        Piece otherPiece = row.get(numY);
+
+        if (this.checkIfOppositeColor(numX, numY, grid)) {
+            grid.splicePiece(otherPiece);
+            setGridDiagonal(numX, numY, grid);
+            return true;
+        } else {
+            return false;
+        }
+    };
+
 
 }
