@@ -1,9 +1,11 @@
 package Chess;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org
 
 public class Grid {
 
@@ -133,8 +135,6 @@ public class Grid {
         return rooks;
     }
 
-
-
     public void splicePiece(Piece piece) {
 
         if (piece != null) {
@@ -146,11 +146,13 @@ public class Grid {
             } else {
                 color = "black";
             }
-                    arr = this.allObjects[color][piece];
 
-            for (var i = 0; i < arr.length; i++) {
-                if (arr[i].id === id) {
-                    arr.splice(i, i + 1);
+            Map<String, Piece[]> allObjects = this.allObjects.get(color);
+            Piece[] pieceList = allObjects.get(piece.getType());
+
+            for (int i = 0; i < pieceList.length; i++) {
+                if (pieceList[i].getId() == id) {
+                    pieceList = ArrayUtils.removeElement(pieceList, piece);
                 }
             }
         }

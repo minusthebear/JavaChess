@@ -37,8 +37,7 @@ public class King extends Piece {
             return false;
         }
 
-        Map<Integer, Piece> row = grid.board.get(x);
-        Piece piece = row.get(y);
+        Piece piece = getOtherPiece(x, y, grid);
 
         if (piece != null) {
 
@@ -142,8 +141,8 @@ public class King extends Piece {
     };
 
     private boolean straightLineCheck(int x, int y, int pos, Grid grid) {
-        Map<Integer, Piece> row = grid.board.get(x);
-        Piece otherPiece = row.get(y);
+
+        Piece otherPiece = getOtherPiece(x, y, grid);
 
         boolean isWhite = this.isWhite();
 
@@ -162,8 +161,8 @@ public class King extends Piece {
     }
 
     private boolean diagonalLineCheck(int x, int y, int pos, Grid grid) {
-        Map<Integer, Piece> row = grid.board.get(x);
-        Piece otherPiece = row.get(y);
+
+        Piece otherPiece = getOtherPiece(x, y, grid);
 
         boolean isWhite = this.isWhite();
 
@@ -194,8 +193,7 @@ public class King extends Piece {
             return false;
         }
 
-        Map<Integer, Piece> row = grid.board.get(x);
-        Piece otherPiece = row.get(y);
+        Piece otherPiece = getOtherPiece(x, y, grid);
 
         boolean isWhite = this.isWhite();
 
@@ -293,7 +291,7 @@ public class King extends Piece {
     public boolean castle(Rook rook, Grid grid) {
 
         if (rook == null || this.isWhite() != rook.isWhite() ||
-            this.isUntouched() || rook.isUntouched())
+            !this.isUntouched() || !rook.isUntouched())
         {
             return false;
         }
@@ -303,46 +301,45 @@ public class King extends Piece {
         int posY = this.position.get("y");
 
         Map<String, Integer> row = new HashMap<>();
-        Piece otherPiece;
-        Map <Piece, Integer> posX = new HashMap<>();
-//
-//        if (posY != rook.position.get("y")) {
-//            return false;
-//        }
+        Map <String, Integer> posX = new HashMap<>();
 
         if (oldRookPos > oldKingPos) {
-            row.set("max", oldRookPos);
-            row.set("min", oldKingPos);
-
-
-
-
-            row = { max: oldRookPos, min: oldKingPos };
-            posX = { king: oldKingPos + 2, rook: oldRookPos - 2 };
+            row.put("max", oldRookPos);
+            row.put("min", oldKingPos);
+            posX.put("king", oldKingPos + 2);
+            posX.put("rook", oldRookPos - 2);
         } else {
-            row = { max: oldKingPos, min: oldRookPos };
-            posX = { king: oldKingPos - 2, rook: oldRookPos + 3 };
+            row.put("max", oldKingPos);
+            row.put("min", oldRookPos);
+            posX.put("king", oldKingPos - 2);
+            posX.put("rook", oldRookPos + 3);
         }
 
-        for (var i = row.min; i < row.max; i++) {
-            if (king.checkIfInCheck(i, posY, grid)) {
+        // Check chess rules to see if values for min and max are correct
+        for (int i = row.get("min") + 1; i < row.get("max"); i++) {
+            Piece piece = getOtherPiece(i, posY, grid);
+            if (piece != null) {
                 return false;
             }
         }
 
         // Check chess rules to see if values for min and max are correct
-        for (var i = row.min + 1; i < row.max; i++) {
-            if (board[i][posY]) {
+        for (int i = row.get("min"); i < row.get("max"); i++) {
+            if (checkIfInCheck(i, posY, grid)) {
                 return false;
             }
         }
 
-        king.setPosition(posX.king, posY);
-        grid.setPiece(posX.king, posY, oldKingPos, posY, king);
-        rook.setPosition(posX.rook, posY);
-        grid.setPiece(posX.rook, posY, oldRookPos, posY, rook);
+        this.setPosition(posX.get("king"), posY);
+        grid.setPiece(posX.get("king"), posY, oldKingPos, posY, this);
+        rook.setPosition(posX.get("rook"), posY);
+        grid.setPiece(posX.get("rook"), posY, oldRookPos, posY, rook);
         return true;
     }
 
-
+    private Piece getOtherPiece(int x, int y, Grid grid) {
+        Map<Integer, Piece> row = grid.board.get(x);
+        Piece otherPiece = row.get(y);
+        return otherPiece;
+    }
 }

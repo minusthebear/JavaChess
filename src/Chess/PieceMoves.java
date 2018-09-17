@@ -29,8 +29,7 @@ public class PieceMoves {
                     return false;
                 }
             }
-            piece.setGrid(grid, x, oldX, y, oldY);
-            piece.untouched = false;
+            setValues(piece, grid, x, oldX, y, oldY);
             return true;
         }
 
@@ -44,8 +43,7 @@ public class PieceMoves {
                     return false;
                 }
             }
-            piece.setGrid(grid, x, oldX, y, oldY);
-            piece.untouched = false;
+            setValues(piece, grid, x, oldX, y, oldY);
             return true;
         }
 
@@ -59,8 +57,7 @@ public class PieceMoves {
                     return false;
                 }
             }
-            piece.setGrid(grid, x, oldX, y, oldY);
-            piece.untouched = false;
+            setValues(piece, grid, x, oldX, y, oldY);
             return true;
         }
 
@@ -74,11 +71,15 @@ public class PieceMoves {
                     return false;
                 }
             }
-            piece.setGrid(grid, x, oldX, y, oldY);
-            piece.untouched = false;
+            setValues(piece, grid, x, oldX, y, oldY);
             return true;
         }
         return false;
+    }
+
+    private void setValues(Piece piece, Grid grid, int x, int oldX, int y, int oldY) {
+        piece.setGrid(grid, x, oldX, y, oldY);
+        piece.setUntouched(false);
     }
 
     private int loopThru(Piece piece, int x, int y, int oldX, int oldY, Grid grid) {
@@ -92,11 +93,11 @@ public class PieceMoves {
             if (piece.checkIfOppositeColor(x, y, grid)) {
                 oldObj = otherPiece;
                 piece.setGrid(grid, x, oldX, y, oldY);
-                piece.untouched = false;
+                piece.setUntouched(false);
 
                 /* TODO */
 
-                // grid.splicePiece(oldObj);
+                grid.splicePiece(oldObj);
                 return 1;
             } else {
                 return -1;
