@@ -3,7 +3,14 @@ package Chess;
 public class Main {
 
     public static void main(String[] args) {
-        Grid grid = Grid.initializeGrid("Matthew");
-        System.out.println(grid.board);
+        Grid game = initializeGame("Matthew");
+        System.out.println(game.allObjects);
+        System.out.println(game.board);
+    }
+
+    private static Grid initializeGame(String name) {
+        Grid grid = new Grid(name);
+        grid.initializeGame();
+        return grid;
     }
 }

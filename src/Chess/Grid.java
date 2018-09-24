@@ -1,11 +1,11 @@
 package Chess;
 
-import java.util.Arrays;
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org
 
 public class Grid {
 
@@ -13,7 +13,7 @@ public class Grid {
     private static final int min = 1;
     private static final int max = 8;
     Map<Integer, Map<Integer, Piece>> board = new HashMap<>();
-    Map<String, Map<String, Piece[]>> allObjects = new HashMap<>();
+    Map<String, Map<String, Piece[]>> allObjects = new HashMap<String, Map<String, Piece[]>>();;
     Map<String, Integer> boundary = new HashMap<>();
 
     public Grid(String name) {
@@ -48,7 +48,7 @@ public class Grid {
     }
 
     public void setStartPosOnGrid(int x, int y, Piece piece) {
-        Map <Integer, Piece> spot = (Map<Integer, Piece>) this.board.get(x);
+        Map <Integer, Piece> spot = this.board.get(x);
         spot.put(y, piece);
         this.board.put(x, spot);
     }
@@ -59,8 +59,8 @@ public class Grid {
     }
 
     public void setPiece(int x, int y, int oldX, int oldY, Piece piece) {
-        Map <Integer, Piece> spotOne = (Map<Integer, Piece>) this.board.get(oldX);
-        Map <Integer, Piece> spotTwo = (Map<Integer, Piece>) this.board.get(x);
+        Map <Integer, Piece> spotOne = this.board.get(oldX);
+        Map <Integer, Piece> spotTwo = this.board.get(x);
         spotOne.put(oldY, null);
         spotTwo.put(y, piece);
         this.board.put(oldX, spotOne);
@@ -77,8 +77,7 @@ public class Grid {
         return true;
     }
 
-    public static Grid initializeGrid(String name) {
-        Grid grid = new Grid(name);
+    private void initializeGrid() {
 
         for (int numX = min; numX <= max; numX++) {
             Map map = new HashMap<Integer, Piece>();
@@ -87,19 +86,17 @@ public class Grid {
                 map.put(numY, null);
             }
 
-            grid.board.put(numX, map);
+            this.board.put(numX, map);
         }
-        return grid;
     }
 
-    public Grid initializeGame(String name) {
-        Grid grid = new Grid(name);
+    public void initializeGame() {
+        initializeGrid();
 
         boolean homeTeam;
         int initFrontYPosition;
         int initRearYPosition;
         String color;
-        Map allObjects = new HashMap<String, Map<String, Piece[]>>();
 
         for (int i = 0; i < 2; i++) {
             if (i % 2 == 0) {
@@ -114,32 +111,52 @@ public class Grid {
                 homeTeam = false;
             }
 
-            Rook[] rookArray = initializeRooks(grid, homeTeam, initRearYPosition);
-            Map pieces = new HashMap<String, Rook[]>();
+            Piece[] rookArray = initializeRooks(homeTeam, initRearYPosition);
+            Piece[] queenArray = initializeQueens(homeTeam, initRearYPosition);
+            Piece[] kingArray = initializeKings(homeTeam, initRearYPosition);
+            HashMap<String, Piece[]> pieces = new HashMap<>();
             pieces.put("rooks", rookArray);
+            pieces.put("queens", queenArray);
+            pieces.put("kings", kingArray);
             this.allObjects.put(color, pieces);
         }
-
-        return grid;
     }
 
-
-    private Rook[] initializeRooks(Grid grid, boolean team, int Y) {
+    private Rook[] initializeRooks(boolean team, int Y) {
         Rook rookOne = new Rook(1, Y, "Rook", team);
         Rook rookTwo = new Rook(8, Y, "Rook", team);
         Rook[] rooks = new Rook[]{rookOne, rookTwo};
 
-        grid.setStartPosOnGrid(1, Y, rookOne);
-        grid.setStartPosOnGrid(8, Y, rookTwo);
+        this.setStartPosOnGrid(1, Y, rookOne);
+        this.setStartPosOnGrid(8, Y, rookTwo);
 
         return rooks;
+    }
+
+    private Queen[] initializeQueens(boolean team, int Y) {
+        Queen queenOne = new Queen(4, Y, "Queen", team);
+        Queen[] queens = new Queen[]{queenOne};
+
+        this.setStartPosOnGrid(4, Y, queenOne);
+
+        return queens;
+    }
+
+    private King[] initializeKings(boolean team, int Y) {
+        King kingOne = new King(5, Y, "King", team);
+        King[] kings = new King[1];
+        kings[0] = kingOne;
+
+        this.setStartPosOnGrid(5, Y, kingOne);
+
+        return kings;
     }
 
     public void splicePiece(Piece piece) {
 
         if (piece != null) {
             String color;
-            int id = piece.getId();
+            Integer id = piece.getId();
 
             if (piece.isWhite()) {
                 color = "white";
@@ -150,8 +167,8 @@ public class Grid {
             Map<String, Piece[]> allObjects = this.allObjects.get(color);
             Piece[] pieceList = allObjects.get(piece.getType());
 
-            for (int i = 0; i < pieceList.length; i++) {
-                if (pieceList[i].getId() == id) {
+            for (Piece p: pieceList) {
+                if (id.equals(p.getId())) {
                     pieceList = ArrayUtils.removeElement(pieceList, piece);
                 }
             }
